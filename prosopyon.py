@@ -1,40 +1,67 @@
 import FreeSimpleGUI as sg
 import cv2
+import face_recognition as fr
+import os
+from rich import print
+from rich.console import Console
 
-layout = [
-    [sg.Text('Usuário')],
-    [sg.Input(key='usuario')],
-    [sg.Text('Contato')],
-    [sg.Input(key='Contato')],
-    [sg.Button('Mapeamento Facial', key='mapeamento')],
-    [sg.Button('Cadastro')],
-    [sg.Text('',key='mensagem')],
-]
+console = Console()
 
+##Cadastro
 
+console.print('Bem vindo ao ProsopyonCad', style='bold blue')
+name_cad = input('Digite seu nome, por gentileza: ')
+console.print('Ok, Agora abra o programa na barra de tarefas', style="bold red")
 
-window= sg.Window('Prosopyon', layout=layout)
+video_capture = cv2.VideoCapture(0)
+faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 while True:
-    event, values=window.read()
-    if event == sg.WIN_CLOSED:
+    ret, frame = video_capture.read()
+
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+#no tocante a rostos
+
+    faces = faceCascade.detectMultiScale(
+        gray, 
+        scaleFactor=1.1,
+        minNeighbors=5,
+        minSize=(30,30)
+    )
+    for (x, y, w, h) in faces:
+        cv2.rectangle(frame, (x,y), (x+w, y+h), (0, 255, 0), 2)
+
+    font = cv2.FONT_HERSHEY_SIMPLEX
+
+    cv2.putText(
+        frame, 
+        'Pressione Enter para capturar seu rosto',
+        (150,20),
+        font, 0.6,
+        (0,0,0),
+        2,
+        cv2.LINE_4
+    )
+
+    cv2.putText(
+        frame, 
+        '- ESC para sair-',
+        (250, 450),
+        font, 0.6,
+        (0,0,0),
+        2,
+        cv2.LINE_4
+    )
+
+    cv2.imshow('Cadastro de Foto Base', frame)
+
+    key = cv2.waitKey(1)
+
+    if key == 27:
         break
-    if event == 'mapeamento':
-        cap=cv2.VideoCapture(0)
-    
-        while True:
-            ret, frame = cap.read()
+    elif key == 13:
+        cv2.imwrite(f'imagens/{name_cad}.png', frame)
 
-            if ret == False:
-                continue
-
-            cv2.imshow('video frame', frame)
-
-            key_pressed = cv2.waitKey(1) & 0xFF
-
-            if key_pressed == ord('q'):
-             break
-
-
-cap.release()
+video_capture.release()
 cv2.destroyAllWindows()
