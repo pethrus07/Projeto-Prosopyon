@@ -1,17 +1,17 @@
 import FreeSimpleGUI as sg
-import face_recognition as fr
+import cv2
 
 layout = [
     [sg.Text('Usuário')],
     [sg.Input(key='usuario')],
-    [sg.Text('Cargo')],
-    [[sg.Combo(['Operário', 'Supervisor', 'Gerente'], default_value='Operário', key='cargo')]],
-    [sg.Text('Senha')],
-    [sg.Input(key='senha')],
-    [sg.Button('Reconhecimento facial', key='reconhecimentofacial')],
-    [sg.Button('login')],
+    [sg.Text('Contato')],
+    [sg.Input(key='Contato')],
+    [sg.Button('Mapeamento Facial', key='mapeamento')],
+    [sg.Button('Cadastro')],
     [sg.Text('',key='mensagem')],
 ]
+
+
 
 window= sg.Window('Prosopyon', layout=layout)
 
@@ -19,14 +19,22 @@ while True:
     event, values=window.read()
     if event == sg.WIN_CLOSED:
         break
-    elif event == 'login':
-        senha_correta = '123456'
-        usuario_correto = 'Jeofton'
-        cargo_correto = 'Gerente'
-        usuario = values['usuario']
-        senha = values['senha']   
-        cargo = values['cargo']
-        if senha == senha_correta and usuario == usuario_correto and cargo == cargo_correto:
-            window['mensagem'].update('Login feito com sucesso')
-        else:
-            window['mensagem'].update('senha ou usuario incorreto')
+    if event == 'mapeamento':
+        cap=cv2.VideoCapture(0)
+    
+        while True:
+            ret, frame = cap.read()
+
+            if ret == False:
+                continue
+
+            cv2.imshow('video frame', frame)
+
+            key_pressed = cv2.waitKey(1) & 0xFF
+
+            if key_pressed == ord('q'):
+             break
+
+
+cap.release()
+cv2.destroyAllWindows()
