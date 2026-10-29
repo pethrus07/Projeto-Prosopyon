@@ -11,7 +11,17 @@ cada uma numa notação padrão:
 
 Experimento de estudo, arquivado: um script de terminal que cadastra o rosto pela webcam e, em seguida, confere no login se o rosto bate com o cadastrado. Tudo roda numa execução só, sem banco: as fotos ficam em PNG numa pasta.
 
-![Prosopyon · reconhecimento facial em Python](./projeto-prosopyon.svg)
+### Quem usa e para quê (UML)
+
+![Casos de uso · Prosopyon · reconhecimento facial em Python](./projeto-prosopyon-1-casos-de-uso.svg)
+
+### Do cadastro ao login pelo rosto (BPMN 2.0)
+
+![Processo · Prosopyon · reconhecimento facial em Python](./projeto-prosopyon-2-processo.svg)
+
+### Arquitetura (C4, containers)
+
+![Arquitetura · Prosopyon · reconhecimento facial em Python](./projeto-prosopyon-3-arquitetura.svg)
 
 Editável: [`projeto-prosopyon.excalidraw`](./projeto-prosopyon.excalidraw), abre em [excalidraw.com](https://excalidraw.com) ou no VS Code com a extensão Excalidraw.
 
