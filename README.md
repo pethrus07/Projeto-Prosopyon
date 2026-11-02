@@ -1,49 +1,64 @@
-# Projeto-Prosopyon
-import cv2
-from deepface import DeepFace 
+English | [Português](README.pt-BR.md)
 
-## ENGINE DE CAPTURA E PARAMETROS
-def reconhece_face(url_foto):
-    foto = fr.load_image_file(url_foto)
-    rostos = fr.face_encodings(foto)
-    if(len(rostos) > 0):
-        return True, rostos
-    else:
-        return False, []
+# Prosopyon
 
+![status](https://img.shields.io/badge/status-archived%20(2026--11)-lightgrey)
 
-def get_rostos():
-    rostos_conhecidos = []
-    nomes_dos_rostos = []
+A terminal script for face recognition login, in Python. It registers a face from the
+webcam, then asks for the name again, takes a second photo and checks whether the face
+matches the registered one.
 
+## Status
 
-    rosto_cadastrado = reconhece_face(f"images/{name_cad}.png")
-    if(rosto_cadastrado[0]):
-        rostos_conhecidos.append(rosto_cadastrado[1][0])
-        nomes_dos_rostos.append(f"{name_cad}")
+**Archived (2026-11).** A university group project from 2025 (three contributors, visible
+in the commit history). It is kept as a record and is not maintained.
 
-    return rostos_conhecidos, nomes_dos_rostos
+## How it works
 
-##SISTEMA DE COMPARAÇÃO DE ROSTOS E RESULTADOS
-desconhecido = reconhece_face(f"images/{name_log}_desconhecido.png")
-if(desconhecido[0]):
-    rosto_desconhecido  = desconhecido[1][0]
-    rostos_conhecidos, nomes_dos_rostos = get_rostos()
-    resultados = fr.compare_faces(rostos_conhecidos, rosto_desconhecido)
-    if resultados == [True]:
-        print("="*28)
-        console.print(f"{os.linesep}-> Usuário Identificado!", style="green bold")
-    elif resultados == [False]:
-        console.print(f"{os.linesep}-> Usuário Não Corresponde ao Cadastrado!", style="red bold", )
+1. Registration: the webcam opens, OpenCV's Haar cascade draws a box around the face, and
+   Enter saves the frame to `imagens/<name>.png`.
+2. Login: the same capture saves `imagens/<name>_desconhecido.png`.
+3. Comparison: `face_recognition` (dlib) encodes both faces and compares them.
 
-    for i in range(len(nomes_dos_rostos)):
-        resultado = resultados[i]
-        if(resultado):
-            print("O Rosto de", nomes_dos_rostos[i], "Foi reconhecido.")
-            print(f"{os.linesep}")
+Everything runs in one execution, with no database. Photos stay on disk as PNG.
 
-else:
-    print('Não foi encontrado nenhum rosto')
+## Stack
 
-video_capture.release()
-cv2.destroyAllWindows()
+Python, OpenCV (capture and face detection), face_recognition (encoding and comparison),
+rich (terminal output).
+
+## Running
+
+```bash
+pip install -r requirements.txt   # face_recognition builds dlib: needs CMake and a C++ compiler
+python prosopyon.py
+```
+
+Needs a webcam.
+
+## Tests
+
+```bash
+pip install pytest rich
+pytest
+```
+
+Three tests cover what does not need a camera: file paths and the result message. CI
+(GitHub Actions) runs flake8 and pytest on Python 3.10 to 3.12 without OpenCV or dlib.
+
+## What was learned
+
+- In 2026-11 a real bug was fixed: registration saved to `imagens/` and login read from
+  `images/`, so the registered face was never found. Now both use one constant.
+- Code that runs at import time cannot be tested. Moving the flow into functions and the
+  heavy imports inside them made the module testable without a webcam.
+- A face match with one registered photo and default tolerance is a demo, not
+  authentication: there is no liveness check, and a printed photo would pass.
+
+## Architecture
+
+Use cases, process and C4 in [docs/arquitetura/](docs/arquitetura/README.md) (Portuguese).
+
+## License
+
+All rights reserved.

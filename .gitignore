@@ -1,0 +1,9 @@
+# Fotos capturadas pela webcam (rosto de pessoa: nunca versionar)
+imagens/
+images/
+*.png
+!docs/**/*.png
+
+__pycache__/
+*.pyc
+.venv/
